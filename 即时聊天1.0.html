@@ -1,0 +1,39 @@
+<HTML>
+    <html>
+       <head>
+       <meta charset="utf-8">
+         <title>即时聊天1.0</title>
+            <textarea id="login" class="form-control" style="position: absolute;left: 45%;top: 10px;height:30px; width: 220px" placeholder="请输入你的账号"></textarea>
+            <button type="button" id="btn_send" class="btn btn-info" onclick="fun_login();" style="position: absolute;left: 58%;top: 10px;">登陆</button>
+            <textarea id="inp_send" class="form-control" style="position: absolute;left: 45%;top: 50px;height:100px; width: 220px" placeholder="发送的内容"></textarea>
+            <button type="button" id="btn_send" class="btn btn-info" onclick="fun_sendto();" style="position: absolute;left: 58%;top: 80px;">发送（ctrl 回车）</button>
+            <textarea id="inp_receive" class="form-control" style="position: absolute;left: 45%;top: 160px;height:100px; width: 220px;" placeholder="收到的内容"></textarea>
+            <script type="text/javascript">
+            var ws
+            function fun_login(){
+                var acct = document.getElementById('login').value
+                var url = "ws://10.248.162.40:8989/start?account=" + acct
+                ws = new WebSocket(url);
+                ws.onopen = function(evt) {
+                    console.log("Connection open ...");
+                };
+                ws.onmessage = function(evt) {
+                    var d = document.getElementById('inp_receive');
+                    d.innerHTML = evt.data;
+                    console.log("Received Message: ", evt.data);
+                };
+                ws.onclose = function(evt) {
+                    console.log("Connection closed.");
+                };
+            }
+            function fun_sendto(){
+                var m = document.getElementById('inp_send').value.split(",");
+                var message = JSON.stringify({"from":"gy","to":m[0],"content":m[1]});
+                var content = message;
+                ws.send(content);
+            }
+            </script>
+        </head>
+       <body>
+      </body>
+    </html>
